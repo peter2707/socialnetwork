@@ -1,4 +1,4 @@
-<?php 
+<?php
 require 'functions/functions.php';
 require 'LinkedInOAuth.php';
 session_start();
@@ -7,18 +7,19 @@ if (isset($_SESSION['user_id'])) {
 }
 session_destroy();
 session_start();
-ob_start(); 
+ob_start();
 ?>
-<!DOCTYPE html>
 <html>
+
 <head>
     <title>Social Network</title>
     <link rel="stylesheet" type="text/css" href="resources/css/main.css">
     <style>
-        .container{
+        .container {
             margin: 40px auto;
             width: 400px;
         }
+
         .content {
             padding: 30px;
             background-color: white;
@@ -26,7 +27,26 @@ ob_start();
         }
     </style>
 </head>
+
 <body>
+    <script src="https://accounts.google.com/gsi/client" async></script>
+    <script>
+        function handleCredentialResponse(response) {
+            console.log("Encoded JWT ID token: " + response.credential);
+        }
+        window.onload = function () {
+            google.accounts.id.initialize({
+                client_id: "160246886063-63gv7rldj6b5vcgs88h2rqpkmvi31a8e.apps.googleusercontent.com",
+                login_uri:"http://localhost",
+                ux_mode: "redirect"
+            });
+            google.accounts.id.renderButton(
+                document.getElementById("buttonDiv"),
+                { theme: "outline", size: "large" }  // customization attributes
+            );
+            google.accounts.id.prompt(); // also display the One Tap dialog
+        }
+    </script>
     <h1>Welcome to Wynch</h1>
     <div class="container">
         <div class="tab">
@@ -47,6 +67,7 @@ ob_start();
                     <input type="submit" value="Login" name="login">
                 </form>
             </div>
+            <div id="buttonDiv"></div>
             <div class="tabcontent" id="signup">
                 <form method="post" onsubmit="return validateRegister()">
                     <!--Package One-->
@@ -85,37 +106,37 @@ ob_start();
                     <!--Birth Date-->
                     Birth Date<span>*</span><br>
                     <select name="selectday">
-                    <?php
-                    for($i=1; $i<=31; $i++){
-                        echo '<option value="'. $i .'">'. $i .'</option>';
-                    }
-                    ?>
+                        <?php
+                        for ($i = 1; $i <= 31; $i++) {
+                            echo '<option value="' . $i . '">' . $i . '</option>';
+                        }
+                        ?>
                     </select>
                     <select name="selectmonth">
-                    <?php
-                    echo '<option value="1">January</option>';
-                    echo '<option value="2">February</option>';
-                    echo '<option value="3">March</option>';
-                    echo '<option value="4">April</option>';
-                    echo '<option value="5">May</option>';
-                    echo '<option value="6">June</option>';
-                    echo '<option value="7">July</option>';
-                    echo '<option value="8">August</option>';
-                    echo '<option value="9">September</option>';
-                    echo '<option value="10">October</option>';
-                    echo '<option value="11">Novemeber</option>';
-                    echo '<option value="12">December</option>';
-                    ?>
+                        <?php
+                        echo '<option value="1">January</option>';
+                        echo '<option value="2">February</option>';
+                        echo '<option value="3">March</option>';
+                        echo '<option value="4">April</option>';
+                        echo '<option value="5">May</option>';
+                        echo '<option value="6">June</option>';
+                        echo '<option value="7">July</option>';
+                        echo '<option value="8">August</option>';
+                        echo '<option value="9">September</option>';
+                        echo '<option value="10">October</option>';
+                        echo '<option value="11">Novemeber</option>';
+                        echo '<option value="12">December</option>';
+                        ?>
                     </select>
                     <select name="selectyear">
-                    <?php
-                    for($i=2017; $i>=1900; $i--){
-                        if($i == 1996){
-                            echo '<option value="'. $i .'" selected>'. $i .'</option>';
+                        <?php
+                        for ($i = 2017; $i >= 1900; $i--) {
+                            if ($i == 1996) {
+                                echo '<option value="' . $i . '" selected>' . $i . '</option>';
+                            }
+                            echo '<option value="' . $i . '">' . $i . '</option>';
                         }
-                        echo '<option value="'. $i .'">'. $i .'</option>';
-                    }
-                    ?>
+                        ?>
                     </select>
                     <br><br>
                     <!--Gender-->
@@ -153,6 +174,7 @@ ob_start();
     </div>
     <script src="resources/js/main.js"></script>
 </body>
+
 </html>
 
 <?php
@@ -162,22 +184,22 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') { // A form is posted
         $useremail = $_POST['useremail'];
         $userpass = md5($_POST['userpass']);
         $query = mysqli_query($conn, "SELECT * FROM users WHERE user_email = '$useremail' AND user_password = '$userpass'");
-//        print  $query;
-        if($query){
-            if(mysqli_num_rows($query) == 1) {
+        //        print  $query;
+        if ($query) {
+            if (mysqli_num_rows($query) == 1) {
                 $row = mysqli_fetch_assoc($query);
                 $_SESSION['user_id'] = $row['user_id'];
                 $_SESSION['user_name'] = $row['user_firstname'] . " " . $row['user_lastname'];
                 header("location:home.php");
-            }
-            else {
-                ?> <script>
+            } else {
+                ?>
+                <script>
                     document.getElementsByClassName("required")[0].innerHTML = "Invalid Login Credentials.";
                     document.getElementsByClassName("required")[1].innerHTML = "Invalid Login Credentials.";
-//                    print $row;
+                    //                    print $row;
                 </script> <?php
             }
-        } else{
+        } else {
             echo mysqli_error($conn);
         }
     }
@@ -192,32 +214,34 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') { // A form is posted
         $usergender = $_POST['usergender'];
         $userhometown = $_POST['userhometown'];
         $userabout = $_POST['userabout'];
-        if (isset($_POST['userstatus'])){
+        if (isset($_POST['userstatus'])) {
             $userstatus = $_POST['userstatus'];
-        }
-        else{
+        } else {
             $userstatus = NULL;
         }
         // Check for Some Unique Constraints
         $query = mysqli_query($conn, "SELECT user_nickname, user_email FROM users WHERE user_nickname = '$usernickname' OR user_email = '$useremail'");
-        if(mysqli_num_rows($query) > 0){
+        if (mysqli_num_rows($query) > 0) {
             $row = mysqli_fetch_assoc($query);
-            if($usernickname == $row['user_nickname'] && !empty($usernickname)){
-                ?> <script>
-                document.getElementsByClassName("required")[4].innerHTML = "This Nickname already exists.";
+            if ($usernickname == $row['user_nickname'] && !empty($usernickname)) {
+                ?>
+                <script>
+                    document.getElementsByClassName("required")[4].innerHTML = "This Nickname already exists.";
                 </script> <?php
             }
-            if($useremail == $row['user_email']){
-                ?> <script>
-                document.getElementsByClassName("required")[7].innerHTML = "This Email already exists.";
-                </script> <?php
+            if ($useremail == $row['user_email']) {
+                ?>
+                <script>
+                    document.getElementsByClassName("required")[7].innerHTML = "This Email already exists.";
+                </script>
+                <?php
             }
         }
         // Insert Data
         $sql = "INSERT INTO users(user_firstname, user_lastname, user_nickname, user_password, user_email, user_gender, user_birthdate, user_status, user_about, user_hometown)
                 VALUES ('$userfirstname', '$userlastname', '$usernickname', '$userpassword', '$useremail', '$usergender', '$userbirthdate', '$userstatus', '$userabout', '$userhometown')";
         $query = mysqli_query($conn, $sql);
-        if($query){
+        if ($query) {
             $query = mysqli_query($conn, "SELECT user_id FROM users WHERE user_email = '$useremail'");
             $row = mysqli_fetch_assoc($query);
             $_SESSION['user_id'] = $row['user_id'];

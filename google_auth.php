@@ -4,7 +4,7 @@ require_once 'vendor/autoload.php';
 session_start();
 
 $client = new Google_Client();
-$client->setClientId('340687585936-pk08sju66iu26o8889beir1raa2mou0f.apps.googleusercontent.com');
+$client->setClientId('160246886063-63gv7rldj6b5vcgs88h2rqpkmvi31a8e.apps.googleusercontent.com');
 $client->setClientSecret('XXXXXXXXXX');
 $client->setRedirectUri('http://localhost/oauth/home.php');
 $client->addScope('email');

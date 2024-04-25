@@ -1,5 +1,9 @@
 {
-    "require": {
-        "google/apiclient": "2.15.0"
-    }
+  "require": {
+    "google/apiclient": "2.15.0"
+  },
+  "config": {
+    "optimize-autoloader": true,
+    "process-timeout": 1200
+  }
 }
