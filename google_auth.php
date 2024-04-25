@@ -5,7 +5,7 @@ session_start();
 
 $client = new Google_Client();
 $client->setClientId('340687585936-pk08sju66iu26o8889beir1raa2mou0f.apps.googleusercontent.com');
-$client->setClientSecret('XXXXXXXXXX');
+$client->setClientSecret('');
 $client->setRedirectUri('http://localhost/oauth/home.php');
 $client->addScope('email');
 
