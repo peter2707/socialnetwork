@@ -37,7 +37,7 @@ ob_start();
         window.onload = function () {
             google.accounts.id.initialize({
                 client_id: "160246886063-63gv7rldj6b5vcgs88h2rqpkmvi31a8e.apps.googleusercontent.com",
-                login_uri:"http://localhost",
+                login_uri:"http://localhost/google_auth.php",
                 ux_mode: "redirect"
             });
             google.accounts.id.renderButton(
