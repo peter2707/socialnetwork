@@ -2,7 +2,7 @@
 require 'LinkedInOAuth.php';
 
 $clientId = '86lp9sdvq4owae';
-$clientSecret = '';
+$clientSecret = 'vevCs1ULLQ476G3N';
 $redirectUri = 'http://localhost/oauth/linkedin_callback.php';
 
 // Initialize LinkedInOAuth class

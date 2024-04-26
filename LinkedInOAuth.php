@@ -16,7 +16,7 @@ class LinkedInOAuth {
             'client_id' => $this->clientId,
             'redirect_uri' => $this->redirectUri,
             'state' => uniqid('', true), // Generate a unique state parameter
-            'scope' => 'profile email',
+            'scope' => 'openid profile email',
         ]);
         return $authorizationUrl;
     }
@@ -48,7 +48,7 @@ class LinkedInOAuth {
     }
 
     public function getUserProfile($accessToken) {
-        $url = 'https://api.linkedin.com/v2/me';
+        $url = 'https://api.linkedin.com/v2/userinfo';
         $headers = [
             'Authorization: Bearer ' . $accessToken,
             'Accept: application/json',
