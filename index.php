@@ -1,6 +1,6 @@
 <?php
 require 'functions/functions.php';
-require 'LinkedInOAuth.php';
+require 'linkedin_provider.php';
 session_start();
 if (isset($_SESSION['user_id'])) {
     header("location:home.php");
@@ -13,11 +13,14 @@ ob_start();
 
 <head>
     <title>Social Network</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="resources/css/main.css">
     <style>
         .container {
             margin: 40px auto;
-            width: 400px;
+            width: 500px;
         }
 
         .content {
@@ -29,6 +32,8 @@ ob_start();
 </head>
 
 <body>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script src="https://kit.fontawesome.com/6c8f138a94.js" crossorigin="anonymous"></script>
     <script src="https://accounts.google.com/gsi/client" async></script>
     <script>
         function handleCredentialResponse(response) {
@@ -41,12 +46,13 @@ ob_start();
                 ux_mode: "redirect"
             });
             google.accounts.id.renderButton(
-                document.getElementById("buttonDiv"),
+                document.getElementById("google-login-btn"),
                 { theme: "outline", size: "large" }  // customization attributes
             );
             google.accounts.id.prompt(); // also display the One Tap dialog
         }
     </script>
+    
     <h1>Welcome to Wynch</h1>
     <div class="container">
         <div class="tab">
@@ -67,7 +73,15 @@ ob_start();
                     <input type="submit" value="Login" name="login">
                 </form>
             </div>
-            <div id="buttonDiv"></div>
+            <div class="row align-items-start mt-3 mb-3">
+                <div class="col-6">
+                    <div id="google-login-btn" class="login-btn"></div>
+                </div>
+                <div class="col-6">
+                    <a href="linkedin_auth.php" class="btn btn-linkedin login-btn"><i class="fa fa-linkedin fa-fw"></i> Sign in with LinkedIn</a>
+                </div>
+            </div>
+
             <div class="tabcontent" id="signup">
                 <form method="post" onsubmit="return validateRegister()">
                     <!--Package One-->
@@ -167,8 +181,6 @@ ob_start();
                     <br><br>
                     <input type="submit" value="Create Account" name="register">
                 </form>
-                <a href="linkedin_auth.php">Login with LinkedIn</a>
-                <a href="google_auth.php">Login with Google</a>
             </div>
         </div>
     </div>
