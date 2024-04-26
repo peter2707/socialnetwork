@@ -1,5 +1,5 @@
 <?php
-class LinkedInOAuth {
+class LinkedInProvider {
     private $clientId;
     private $clientSecret;
     private $redirectUri;
