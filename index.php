@@ -1,5 +1,6 @@
 <?php 
 require 'functions/functions.php';
+require 'LinkedInOAuth.php';
 session_start();
 if (isset($_SESSION['user_id'])) {
     header("location:home.php");
@@ -145,6 +146,8 @@ ob_start();
                     <br><br>
                     <input type="submit" value="Create Account" name="register">
                 </form>
+                <a href="linkedin_auth.php">Login with LinkedIn</a>
+                <a href="google_auth.php">Login with Google</a>
             </div>
         </div>
     </div>

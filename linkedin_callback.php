@@ -1,0 +1,36 @@
+<?php
+//Filename: linkedin_callback.php
+require 'LinkedInOAuth.php';
+
+// Initialize LinkedInOAuth class with your credentials
+$clientId = '86lp9sdvq4owae';
+$clientSecret = '';
+$redirectUri = 'http://localhost/oauth/linkedin_callback.php';
+
+$linkedinOAuth = new LinkedInOAuth($clientId, $clientSecret, $redirectUri);
+
+if (isset($_GET['code'])) {
+    $code = $_GET['code'];
+    $accessToken = $linkedinOAuth->getAccessToken($code);
+
+    if ($accessToken) {
+        $userProfile = $linkedinOAuth->getUserProfile($accessToken);
+
+        if ($userProfile) {
+            // Process user profile data
+
+            header("Location: home.php");
+            exit;
+        } else {
+            error_log("Error retrieving user profile.");
+            echo "Error retrieving user profile. Please try again later.";
+        }
+    } else {
+        error_log("Error retrieving access token.");
+        echo "Error retrieving access token. Please try again later.";
+    }
+} else {
+    error_log("Authorization failed. Code not received.");
+    echo "Authorization failed. Code not received.";
+}
+?>
