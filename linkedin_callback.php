@@ -4,7 +4,7 @@ require 'LinkedInOAuth.php';
 
 // Initialize LinkedInOAuth class with your credentials
 $clientId = '86lp9sdvq4owae';
-$clientSecret = '';
+$clientSecret = 'vevCs1ULLQ476G3N';
 $redirectUri = 'http://localhost/oauth/linkedin_callback.php';
 
 $linkedinOAuth = new LinkedInOAuth($clientId, $clientSecret, $redirectUri);
@@ -17,10 +17,9 @@ if (isset($_GET['code'])) {
         $userProfile = $linkedinOAuth->getUserProfile($accessToken);
 
         if ($userProfile) {
-            // Process user profile data
-
-            header("Location: home.php");
-            exit;
+            echo "<pre>";
+            print_r($userProfile);
+            echo "</pre>";
         } else {
             error_log("Error retrieving user profile.");
             echo "Error retrieving user profile. Please try again later.";
