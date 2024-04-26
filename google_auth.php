@@ -13,10 +13,14 @@ $id_token = $_POST['credential'];
 
 // Check for cookie in consecutive tries.
 if (isset($id_token)) {
-    $payload = $client->verifyIdToken($id_token);
-    if ($payload) {
-        $userid = $payload['sub'];
-        echo( $userid ."". $id_token ."");
+    $verifiedPayload = $client->verifyIdToken($id_token);
+    if ($verifiedPayload) {
+        list($header, $payload, $signature) = explode('.', $id_token);
+        $jsonToken = base64_decode($payload);
+        $arrayToken = json_decode($jsonToken, true);
+        print_r($arrayToken);
+        // $userid = $payload['sub'];
+        // echo ($userid . "" . $id_token . "");
     } else {
         // Invalid ID token
     }
