@@ -3,6 +3,11 @@ require_once 'vendor/autoload.php';
 require 'functions/functions.php';
 
 session_start();
+if (isset($_SESSION['user_id'])) {
+    header("location:home.php");
+}
+session_destroy();
+session_start();
 
 /**
  * This page will capture the POST callback from google witch includes the 
@@ -25,6 +30,7 @@ if (isset($id_token)) {
             $query = mysqli_query($conn, "SELECT * FROM users WHERE user_email ='" . $arrayToken['email'] . "'");
             //        print  $query;
             if ($query) {
+                // If a user is existing with this email address.
                 if (mysqli_num_rows($query) == 1) {
                     // We automatically link the user accounts no prompt is given
                     // because if there were to be multiple accounts most existing
@@ -55,15 +61,18 @@ if (isset($id_token)) {
                             }
                         }
                         $update_query_string = "UPDATE socialnetwork.users SET " . $update_string . " WHERE user_email='" . $arrayToken['email'] . "'";
-
-                        print ($update_query);
-                    }
-                    $update_query = mysqli_query($conn, $update_query_string);
-                    if($update_query){
-                        header("location:home.php");
+                        $update_query = mysqli_query($conn, $update_query_string);
+                        if ($update_query) {
+                            $_SESSION['user_name'] = $arrayToken['given_name'] . " " . $arrayToken['family_name'];
+                        } else {
+                            echo mysqli_error($conn);
+                        }
                     } else {
-                        echo mysqli_error($conn);
+                        $_SESSION['user_name'] = $row['user_firstname'] . " " . $row['user_lastname'];
                     }
+                    header("location:home.php");
+                } else {
+                    // This is a new user
                 }
             } else {
                 echo mysqli_error($conn);
