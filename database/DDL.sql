@@ -39,3 +39,9 @@ user_id         INT,
 user_phone      INT,
 FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
+
+CREATE TABLE user_google_data (
+user_id         INT,
+google_pfp      VARCHAR(1000),
+FOREIGN KEY (user_id) REFERENCES users(user_id)
+);
