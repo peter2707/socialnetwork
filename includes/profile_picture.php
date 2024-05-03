@@ -8,6 +8,8 @@ if($target) {
         echo '<img src="data/images/profiles/M.jpg" width="' . $width . '" height="' . $height .'">';
     } else if ($row['user_gender'] == 'F') {
         echo '<img src="data/images/profiles/F.jpg" width="' . $width . '" height="' . $height .'">';
+    } else {
+        echo '<img src="data/images/profiles/N.png" width="' . $width . '" height="' . $height .'">';
     }
 }
 
