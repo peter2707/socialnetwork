@@ -1,5 +1,6 @@
 <?php
 require_once 'vendor/autoload.php';
+require 'functions/functions.php';
 
 session_start();
 
@@ -10,6 +11,7 @@ session_start();
 $client = new Google_Client(['client_id' => '160246886063-63gv7rldj6b5vcgs88h2rqpkmvi31a8e.apps.googleusercontent.com']);
 
 $id_token = $_POST['credential'];
+$conn = connect();
 
 // Check for cookie in consecutive tries.
 if (isset($id_token)) {
@@ -18,27 +20,59 @@ if (isset($id_token)) {
         list($header, $payload, $signature) = explode('.', $id_token);
         $jsonToken = base64_decode($payload);
         $arrayToken = json_decode($jsonToken, true);
-        print_r($arrayToken);
-        // $userid = $payload['sub'];
-        // echo ($userid . "" . $id_token . "");
+        if ($arrayToken['email']) {
+            // Check if the email is already existing in our DB.
+            $query = mysqli_query($conn, "SELECT * FROM users WHERE user_email ='" . $arrayToken['email'] . "'");
+            //        print  $query;
+            if ($query) {
+                if (mysqli_num_rows($query) == 1) {
+                    // We automatically link the user accounts no prompt is given
+                    // because if there were to be multiple accounts most existing
+                    // code especially "Search function" would have to be modified.
+                    $row = mysqli_fetch_assoc($query);
+                    // Here we update information of the user, based on the response. 
+                    // if changes are found they take precedence over existing ones.
+                    $updatedData = array();
+                    $_SESSION['user_id'] = $row['user_id'];
+                    if (isset($arrayToken['given_name'])) {
+                        if (strtolower($arrayToken['given_name']) != strtolower($row['user_firstname'])) {
+                            $updatedData["user_firstname"] = $arrayToken['given_name'];
+                        }
+                    }
+                    if (isset($arrayToken['family_name'])) {
+                        if (strtolower($arrayToken['family_name']) != strtolower($row['user_lastname'])) {
+                            $updatedData["user_lastname"] = $arrayToken['family_name'];
+                        }
+                    }
+                    if (sizeof($updatedData) > 0) {
+                        $update_string = "";
+                        $count = 0;
+                        foreach ($updatedData as $tbl_n => $tbl_val) {
+                            $update_string .= "" . $tbl_n . "='" . $tbl_val . "' ";
+                            $count++;
+                            if ($count != sizeof($updatedData)) {
+                                $update_string .= ",";
+                            }
+                        }
+                        $update_query_string = "UPDATE socialnetwork.users SET " . $update_string . " WHERE user_email='" . $arrayToken['email'] . "'";
+
+                        print ($update_query);
+                    }
+                    $update_query = mysqli_query($conn, $update_query_string);
+                    if($update_query){
+                        header("location:home.php");
+                    } else {
+                        echo mysqli_error($conn);
+                    }
+                }
+            } else {
+                echo mysqli_error($conn);
+            }
+        }
     } else {
         // Invalid ID token
     }
 }
-
-
-// if (isset($_GET['code'])) {
-//     $token = $client->fetchAccessTokenWithAuthCode($_GET['code']);
-
-//     $_SESSION['access_token'] = $token;
-//     header('Location: ' . filter_var('http://localhost/oauth/home.php', FILTER_SANITIZE_URL));
-// }
-
-// if (isset($_SESSION['access_token']) && $_SESSION['access_token']) {
-//     $client->setAccessToken($_SESSION['access_token']);
-// } else {
-//     $authUrl = $client->createAuthUrl();
-// }
 
 ?>
 <!DOCTYPE html>
