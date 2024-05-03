@@ -72,8 +72,16 @@ ob_start();
                     <br><br>
                     <input type="submit" value="Login" name="login">
                 </form>
+                <div class="login-separator">
+                    <div class="separator">
+                        <hr></hr>
+                        <span>OR</span>
+                        <hr></hr>
+                    </div>
+                </div>
             </div>
             <div class="row align-items-start mt-3 mb-3">
+                <p class="text-center" style="font-size: 16px;">Continue with</p>
                 <div class="col-6">
                     <div id="google-login-btn" class="login-btn"></div>
                 </div>
@@ -83,6 +91,13 @@ ob_start();
             </div>
 
             <div class="tabcontent" id="signup">
+                <div class="login-separator">
+                    <div class="separator">
+                        <hr></hr>
+                        <span>OR</span>
+                        <hr></hr>
+                    </div>
+                </div>
                 <form method="post" onsubmit="return validateRegister()">
                     <!--Package One-->
                     <h2>Highly Required Information</h2>

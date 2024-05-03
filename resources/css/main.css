@@ -69,6 +69,10 @@ span {
     color: #fff;
 }
 
+/*============== TYPO SETTINGS ============*/
+.text-center {
+    text-align: center;
+}
 
 /*============== NAVBAR SETTINGS ============*/
 
@@ -229,6 +233,29 @@ a.profilelink:hover {
     text-decoration: underline;
 }
 
+/* Login Separator */
+.login-separator {
+    margin: 16px;
+}
+
+.separator {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+}
+
+.separator hr {
+    border-color: black;
+    margin: 0px 16px;
+    margin-top: 0px;
+    width: 50%;
+}
+
+.separator span {
+    color: black;
+    font-size: 14px;
+}
 
 /* Horizontal Line after H2 */
 
