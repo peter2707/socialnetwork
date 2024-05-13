@@ -95,7 +95,7 @@ if (isset($id_token)) {
                     if (!isset($arrayToken['dob'])) {
                         array_push($requiredData, 'user_birthdate');
                         // default birthdate will be an impossible one 
-                        $arrayToken['dob'] = date_create('1990-01-01');
+                        $arrayToken['dob'] = date_create('1900-01-01');
                     }
                     if (!isset($arrayToken['gender'])) {
                         array_push($requiredData, 'user_gender');
@@ -111,6 +111,11 @@ if (isset($id_token)) {
                         $_SESSION['user_name'] = $arrayToken['given_name'] . " " . $arrayToken['family_name'];
                     } else {
                         echo mysqli_error($conn);
+                    }
+                    if (count($requiredData) > 0) {
+                        // go to required data page
+                    } else {
+                        header("location:home.php");
                     }
                 }
             } else {
