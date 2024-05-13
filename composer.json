@@ -1,6 +1,7 @@
 {
   "require": {
-    "google/apiclient": "2.15.0"
+    "google/apiclient": "2.15.0",
+    "ircmaxell/random-lib": "^1.2"
   },
   "config": {
     "optimize-autoloader": true,

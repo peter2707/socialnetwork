@@ -2,6 +2,9 @@
 require_once 'vendor/autoload.php';
 require 'functions/functions.php';
 
+$factory = new RandomLib\Factory;
+$generator = $factory->getGenerator(new SecurityLib\Strength(SecurityLib\Strength::MEDIUM));
+
 session_start();
 if (isset($_SESSION['user_id'])) {
     header("location:home.php");
@@ -73,6 +76,42 @@ if (isset($id_token)) {
                     header("location:home.php");
                 } else {
                     // This is a new user
+                    // As of now the required information for a user are 
+                    // firstname, lastname, password, email,gender and birthdate,
+                    // If these information are not present we will genreate random values for them and insert for
+                    // the time being.
+
+                    // Holds the information to be captured from the user.
+                    // We assume email is always a given.
+                    $requiredData = array();
+                    if (!isset($arrayToken['given_name'])) {
+                        array_push($requiredData, 'user_firstname');
+                        $arrayToken['given_name'] = "user" . $generator->generateString(10);
+                    }
+                    if (!isset($arrayToken['family_name'])) {
+                        array_push($requiredData, 'user_lastname');
+                        $arrayToken['family_name'] = $generator->generateString(5);
+                    }
+                    if (!isset($arrayToken['dob'])) {
+                        array_push($requiredData, 'user_birthdate');
+                        // default birthdate will be an impossible one 
+                        $arrayToken['dob'] = date_create('1990-01-01');
+                    }
+                    if (!isset($arrayToken['gender'])) {
+                        array_push($requiredData, 'user_gender');
+                        $arrayToken['gender'] = 'NA';
+                    }
+                    $random_password = $generator->generateRandomString(20);
+                    $insertQueryString = "INSERT INTO socialnetwork.users
+                    (user_firstname, user_lastname, user_nickname, user_password, user_email, user_gender, user_birthdate)
+                    VALUES('" . $arrayToken['given_name'] . "', '" . $arrayToken['family_name'] . "', '" . $random_password . "', '" . $arrayToken['email'] . "', '" . $arrayToken['gender'] . "', '" . $arrayToken['dob'] . "');
+                    ";
+                    $insertQuery = mysqli_query($conn, $insertQueryString);
+                    if ($insertQuery) {
+                        $_SESSION['user_name'] = $arrayToken['given_name'] . " " . $arrayToken['family_name'];
+                    } else {
+                        echo mysqli_error($conn);
+                    }
                 }
             } else {
                 echo mysqli_error($conn);
