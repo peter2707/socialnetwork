@@ -99,21 +99,29 @@ if (isset($id_token)) {
                     }
                     if (!isset($arrayToken['gender'])) {
                         array_push($requiredData, 'user_gender');
-                        $arrayToken['gender'] = 'NA';
+                        $arrayToken['gender'] = 'N';
                     }
-                    $random_password = $generator->generateRandomString(20);
+                    $random_password = $generator->generateString(20);
                     $insertQueryString = "INSERT INTO socialnetwork.users
-                    (user_firstname, user_lastname, user_nickname, user_password, user_email, user_gender, user_birthdate)
-                    VALUES('" . $arrayToken['given_name'] . "', '" . $arrayToken['family_name'] . "', '" . $random_password . "', '" . $arrayToken['email'] . "', '" . $arrayToken['gender'] . "', '" . $arrayToken['dob'] . "');
+                    (user_firstname, user_lastname, user_password, user_email, user_gender, user_birthdate)
+                    VALUES('" . $arrayToken['given_name'] . "', '" . $arrayToken['family_name'] . "', '" . $random_password . "', '" . $arrayToken['email'] . "', '" . $arrayToken['gender'] . "', '" . date_format($arrayToken['dob'], 'Y-m-d') . "');
                     ";
                     $insertQuery = mysqli_query($conn, $insertQueryString);
                     if ($insertQuery) {
                         $_SESSION['user_name'] = $arrayToken['given_name'] . " " . $arrayToken['family_name'];
+                        $getInfoQuery = mysqli_query($conn, "SELECT * FROM users WHERE user_email ='" . $arrayToken['email'] . "'");
+                        if ($getInfoQuery) {
+                            $getInfoRow = mysqli_fetch_assoc($getInfoQuery);
+                            $_SESSION["user_id"] = $getInfoRow["user_id"];
+                        } else {
+                            echo mysqli_error($conn);
+                        }
                     } else {
                         echo mysqli_error($conn);
                     }
                     if (count($requiredData) > 0) {
                         // go to required data page
+                        header("location:profile.php");
                     } else {
                         header("location:home.php");
                     }
