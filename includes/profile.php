@@ -59,8 +59,10 @@ if($flag == 1){
         echo'</form>';
     }
 }
-
-echo '<center>'; 
+echo '</center>';
+echo '<center>';
+include 'includes/edit_profile.php';
+echo '</center>';
 echo'</div>';
 
 $query4 = mysqli_query($conn, "SELECT * FROM user_phone WHERE user_id = {$row['user_id']}");
@@ -80,5 +82,4 @@ if(mysqli_num_rows($query4) > 0){
     echo '</center>';
     echo '</div>';
 }
-
 ?>
