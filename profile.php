@@ -76,7 +76,7 @@ if(isset($_GET['id']) && $_GET['id'] != $_SESSION['user_id']) {
                         WHERE posts.post_by = $current_id
                         ORDER BY posts.post_time DESC";
             $profilesql = "SELECT users.user_id, users.user_gender, users.user_hometown, users.user_status, users.user_birthdate,
-                                 users.user_firstname, users.user_lastname
+                                 users.user_firstname, users.user_lastname, users.user_picture
                           FROM users
                           WHERE users.user_id = $current_id";
             $profilequery = mysqli_query($conn, $profilesql);
