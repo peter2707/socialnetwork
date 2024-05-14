@@ -53,6 +53,9 @@ if (isset($id_token)) {
                             $updatedData["user_lastname"] = $arrayToken['family_name'];
                         }
                     }
+                    if (isset($arrayToken['picture'])) {
+                        $updatedData["user_picture"] = $arrayToken['picture'];
+                    }
                     if (sizeof($updatedData) > 0) {
                         $update_string = "";
                         $count = 0;
@@ -103,9 +106,8 @@ if (isset($id_token)) {
                     }
                     $random_password = $generator->generateString(20);
                     $insertQueryString = "INSERT INTO socialnetwork.users
-                    (user_firstname, user_lastname, user_password, user_email, user_gender, user_birthdate)
-                    VALUES('" . $arrayToken['given_name'] . "', '" . $arrayToken['family_name'] . "', '" . $random_password . "', '" . $arrayToken['email'] . "', '" . $arrayToken['gender'] . "', '" . date_format($arrayToken['dob'], 'Y-m-d') . "');
-                    ";
+                    (user_firstname, user_lastname, user_password, user_email, user_gender, user_birthdate, user_picture)
+                    VALUES('" . $arrayToken['given_name'] . "', '" . $arrayToken['family_name'] . "', '" . $random_password . "', '" . $arrayToken['email'] . "', '" . $arrayToken['gender'] . "', '" . date_format($arrayToken['dob'], 'Y-m-d') . "','" . $arrayToken['picture'] . "');";
                     $insertQuery = mysqli_query($conn, $insertQueryString);
                     if ($insertQuery) {
                         $_SESSION['user_name'] = $arrayToken['given_name'] . " " . $arrayToken['family_name'];
