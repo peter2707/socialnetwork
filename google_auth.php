@@ -2,6 +2,9 @@
 require_once 'vendor/autoload.php';
 require 'functions/functions.php';
 
+$factory = new RandomLib\Factory;
+$generator = $factory->getGenerator(new SecurityLib\Strength(SecurityLib\Strength::MEDIUM));
+
 session_start();
 if (isset($_SESSION['user_id'])) {
     header("location:home.php");
@@ -50,6 +53,9 @@ if (isset($id_token)) {
                             $updatedData["user_lastname"] = $arrayToken['family_name'];
                         }
                     }
+                    if (isset($arrayToken['picture'])) {
+                        $updatedData["user_picture"] = $arrayToken['picture'];
+                    }
                     if (sizeof($updatedData) > 0) {
                         $update_string = "";
                         $count = 0;
@@ -73,6 +79,58 @@ if (isset($id_token)) {
                     header("location:home.php");
                 } else {
                     // This is a new user
+                    // As of now the required information for a user are 
+                    // firstname, lastname, password, email,gender and birthdate,
+                    // If these information are not present we will genreate random values for them and insert for
+                    // the time being.
+
+                    // Holds the information to be captured from the user.
+                    // We assume email is always a given.
+                    $requiredData = array();
+                    if (!isset($arrayToken['given_name'])) {
+                        array_push($requiredData, 'user_firstname');
+                        $arrayToken['given_name'] = "user" . $generator->generateString(10);
+                    }
+                    if (!isset($arrayToken['family_name'])) {
+                        array_push($requiredData, 'user_lastname');
+                        $arrayToken['family_name'] = $generator->generateString(5);
+                    }
+                    if (!isset($arrayToken['dob'])) {
+                        array_push($requiredData, 'user_birthdate');
+                        // default birthdate will be an impossible one 
+                        $arrayToken['dob'] = date_create('1900-01-01');
+                    }
+                    if (!isset($arrayToken['gender'])) {
+                        array_push($requiredData, 'user_gender');
+                        $arrayToken['gender'] = 'N';
+                    }
+                    $random_password = $generator->generateString(20);
+                    $insertQueryString = "INSERT INTO socialnetwork.users
+                    (user_firstname, user_lastname, user_password, user_email, user_gender, user_birthdate, user_picture)
+                    VALUES('" . $arrayToken['given_name'] . "', '" . $arrayToken['family_name'] . "', '" . $random_password . "', '" . $arrayToken['email'] . "', '" . $arrayToken['gender'] . "', '" . date_format($arrayToken['dob'], 'Y-m-d') . "','" . $arrayToken['picture'] . "');";
+                    $insertQuery = mysqli_query($conn, $insertQueryString);
+                    if ($insertQuery) {
+                        $_SESSION['user_name'] = $arrayToken['given_name'] . " " . $arrayToken['family_name'];
+                        $getInfoQuery = mysqli_query($conn, "SELECT * FROM users WHERE user_email ='" . $arrayToken['email'] . "'");
+                        if ($getInfoQuery) {
+                            $getInfoRow = mysqli_fetch_assoc($getInfoQuery);
+                            $_SESSION["user_id"] = $getInfoRow["user_id"];
+                        } else {
+                            echo mysqli_error($conn);
+                        }
+                    } else {
+                        echo mysqli_error($conn);
+                    }
+                    if (count($requiredData) > 0) {
+                        $headerString = "location:profile.php?mandatoryUpdate=true";
+                        foreach ($requiredData as $key => $value) {
+                            $headerString .= "" . $value . "=" . $key . "&";
+                        }
+                        // go to required data page
+                        header($headerString);
+                    } else {
+                        header("location:home.php");
+                    }
                 }
             } else {
                 echo mysqli_error($conn);

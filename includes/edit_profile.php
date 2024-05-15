@@ -13,6 +13,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (!empty($_POST["nickname"])) {
         $updates[] = "user_nickname = '" . htmlspecialchars($_POST["nickname"]) . "'";
     }
+    if (!empty($_POST["firstname"])) {
+        $updates[] = "user_firstname = '" . htmlspecialchars($_POST["firstname"]) . "'";
+    }
+    if (!empty($_POST["lastname"])) {
+        $updates[] = "user_lastname = '" . htmlspecialchars($_POST["lastname"]) . "'";
+    }
     if (!empty($_POST["gender"])) {
         $updates[] = "user_gender = '" . htmlspecialchars($_POST["gender"]) . "'";
     }
@@ -34,7 +40,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (!empty($updates)) {
         // Construct the SQL update query
         $updateQuery = "UPDATE users SET " . implode(", ", $updates) . " WHERE user_id = '$userId'";
-        
+
         // Perform the update in the database
         $query = mysqli_query($conn, $updateQuery);
 
@@ -59,6 +65,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -66,14 +73,27 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <!-- Link to CSS styles for modal -->
     <link rel="stylesheet" type="text/css" href="resources/css/popup_modal.css">
 </head>
+
 <body>
     <button id="editProfileBtn" class="editProfileBtn">Edit Profile</button>
     <!-- The modal -->
     <div id="editProfileModal" class="modal">
         <div class="modal-content">
             <span class="close">&times;</span>
-            <h2>Edit Profile</h2>
+            <h2 class="info">Edit Profile</h2>
             <form method="POST">
+
+                <div class="firstnameDiv">
+                    <label for="name">First Name:</label>
+                    <input type="text" id="firstname" name="firstname"><br><br>
+                </div>
+
+                <div class="lastnameDiv">
+                    <label for="name">Last Name:</label>
+                    <input type="text" id="lastname" name="lastname"><br><br>
+                </div>
+
+
                 <label for="name">Nickname:</label>
                 <input type="text" id="nickname" name="nickname"><br><br>
 
@@ -92,53 +112,104 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
                 <!--Package Two-->
                 <h2>Additional Information</h2>
-                    <hr>
-                    <!--Marital Status-->
-                    <input type="radio" name="userstatus" value="S" id="singlestatus">
-                    <label>Single</label>
-                    <input type="radio" name="userstatus" value="E" id="engagedstatus">
-                    <label>Engaged</label>
-                    <input type="radio" name="userstatus" value="M" id="marriedstatus">
-                    <label>Married</label>
-                    <br><br>
-                    <!--About Me-->
-                    <label>About Me</label><br>
-                    <textarea rows="12" name="userabout" id="userabout"></textarea>
-                    <br><br>
+                <hr>
+                <!--Marital Status-->
+                <input type="radio" name="userstatus" value="S" id="singlestatus">
+                <label>Single</label>
+                <input type="radio" name="userstatus" value="E" id="engagedstatus">
+                <label>Engaged</label>
+                <input type="radio" name="userstatus" value="M" id="marriedstatus">
+                <label>Married</label>
+                <br><br>
+                <!--About Me-->
+                <label>About Me</label><br>
+                <textarea rows="12" name="userabout" id="userabout"></textarea>
+                <br><br>
 
                 <input type="submit" value="Save">
             </form>
         </div>
     </div>
 </body>
+
 </html>
 
 
 <script>
-// Get the modal element
-var modal = document.getElementById('editProfileModal');
+    // Get the modal element
+    var modal = document.getElementById('editProfileModal');
 
-// Get the button that opens the modal
-var btn = document.getElementById("editProfileBtn");
+    // Get the button that opens the modal
+    var btn = document.getElementById("editProfileBtn");
 
-// Get the <span> element that closes the modal
-var span = document.getElementsByClassName("close")[0];
+    // Get the <span> element that closes the modal
+    var span = document.getElementsByClassName("close")[0];
 
-// When the user clicks on the button, open the modal
-btn.onclick = function() {
-    modal.style.display = "block";
-}
+    var requiredDesc = document.getElementsByClassName("info")[0]
 
-// When the user clicks on <span> (x), close the modal
-span.onclick = function() {
-    modal.style.display = "none";
-}
+    // dob input
+    var dobInput = document.getElementById("dob");
 
-// When the user clicks anywhere outside of the modal, close it
-window.onclick = function(event) {
-    if (event.target == modal) {
+    // gender input
+    var genderInput = document.getElementById("malegender");
+
+    // first name input
+    var fnameInput = document.getElementById("firstname");
+
+    // last name input
+    var lnameInput = document.getElementById("lastname");
+
+    // fname div
+    var fnameDiv = document.getElementsByClassName("firstnameDiv")[0];
+
+    // fname div
+    var lnameDiv = document.getElementsByClassName("lastnameDiv")[0];
+
+    // When the user clicks on the button, open the modal
+    btn.onclick = function () {
+        modal.style.display = "block";
+    }
+
+    // When the user clicks on <span> (x), close the modal
+    span.onclick = function () {
         modal.style.display = "none";
     }
-}
-</script>
 
+    var params = new URLSearchParams(window.location.search)
+    
+    console.log(params)
+    // Must show modal on new user creation.
+    if (params.has('mandatoryUpdate')) {
+        span.style.display = "none";
+        modal.style.display = "block";
+        requiredDesc.innerHTML = "Please fill in all mandatory information"
+        if (params.has("given_name")) {
+            fnameDiv.style.display = "block"
+            fnameInput.required = true;
+        } else {
+            fnameDiv.style.display = "none"
+        }
+        if (params.has("family_name")) {
+            lnameDiv.style.display = "block"
+            lnameInput.required = true
+        } else {
+            lnameDiv.style.display = "none"
+        }
+        if (params.has("dob")) {
+            dob.required = true
+        }
+        if (params.has("gender")) {
+            genderInput.required = true
+        }
+    } else {
+        fnameDiv.style.display = "none"
+        lnameDiv.style.display = "none"
+    }
+
+    // When the user clicks anywhere outside of the modal, close it
+    window.onclick = function (event) {
+        if (event.target == modal && !params.has('mandatoryUpdate')) {
+            modal.style.display = "none";
+        }
+    }
+</script>
