@@ -28,6 +28,9 @@ if(!empty($row['user_status'])){
     else if($row['user_status'] == "M")
         echo 'Married';
     echo '<br>';
+} else {
+    echo 'Update Realtionship Status';
+    echo '<br>';
 }
 // Birthdate
 echo $row['user_birthdate'];
@@ -59,10 +62,8 @@ if($flag == 1){
         echo'</form>';
     }
 }
-echo '</center>';
-echo '<center>';
-include 'includes/edit_profile.php';
-echo '</center>';
+
+echo '<center>'; 
 echo'</div>';
 
 $query4 = mysqli_query($conn, "SELECT * FROM user_phone WHERE user_id = {$row['user_id']}");
@@ -79,6 +80,16 @@ if(mysqli_num_rows($query4) > 0){
         echo $row4['user_phone'];
         echo '<br>';
     }
+    echo '</center>';
+    echo '</div>';
+} else {
+    echo '<br>';
+    echo '<div class="profile">';
+    echo '<center class="changeprofile">'; 
+    echo 'Phones:';
+    echo '<br>';
+    echo 'Update your phone number';
+    echo '<br>';
     echo '</center>';
     echo '</div>';
 }
