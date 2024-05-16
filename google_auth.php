@@ -43,6 +43,14 @@ if (isset($id_token)) {
                     // if changes are found they take precedence over existing ones.
                     $updatedData = array();
                     $_SESSION['user_id'] = $row['user_id'];
+                    //Persist token,
+                    $token_query_string = "INSERT into user_google_data (user_id, google_token) VALUES ('" . $row['user_id'] . "','" . $id_token . "');";
+                    $token_query = mysqli_query($conn, $token_query_string);
+                    if ($token_query) {
+                        // Do nothing
+                    } else {
+                        echo mysqli_error($conn);
+                    }
                     if (isset($arrayToken['given_name'])) {
                         if (strtolower($arrayToken['given_name']) != strtolower($row['user_firstname'])) {
                             $updatedData["user_firstname"] = $arrayToken['given_name'];
@@ -115,6 +123,13 @@ if (isset($id_token)) {
                         if ($getInfoQuery) {
                             $getInfoRow = mysqli_fetch_assoc($getInfoQuery);
                             $_SESSION["user_id"] = $getInfoRow["user_id"];
+                            $token_query_string = "INSERT into user_google_data (user_id, google_token) VALUES ('" . $getInfoRow["user_id"] . "','" . $id_token . "');";
+                            $token_query = mysqli_query($conn, $token_query_string);
+                            if ($token_query) {
+                                // Do nothing
+                            } else {
+                                echo mysqli_error($conn);
+                            }
                         } else {
                             echo mysqli_error($conn);
                         }
