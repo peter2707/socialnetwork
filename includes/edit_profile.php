@@ -195,10 +195,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         } else {
             lnameDiv.style.display = "none"
         }
-        if (params.has("dob")) {
+        if (params.has("user_birthdate")) {
             dob.required = true
         }
-        if (params.has("gender")) {
+        if (params.has("user_gender")) {
             genderInput.required = true
         }
     } else {
