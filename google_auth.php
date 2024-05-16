@@ -122,7 +122,7 @@ if (isset($id_token)) {
                         echo mysqli_error($conn);
                     }
                     if (count($requiredData) > 0) {
-                        $headerString = "location:profile.php?mandatoryUpdate=true";
+                        $headerString = "location:profile.php?mandatoryUpdate=true&";
                         foreach ($requiredData as $key => $value) {
                             $headerString .= "" . $value . "=" . $key . "&";
                         }
