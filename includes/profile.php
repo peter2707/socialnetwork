@@ -63,7 +63,10 @@ if($flag == 1){
     }
 }
 
-echo '<center>'; 
+echo '</center>';
+echo '<center>';
+include 'includes/edit_profile.php';
+echo '</center>';
 echo'</div>';
 
 $query4 = mysqli_query($conn, "SELECT * FROM user_phone WHERE user_id = {$row['user_id']}");
