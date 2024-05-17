@@ -76,13 +76,13 @@ if(isset($_GET['id']) && $_GET['id'] != $_SESSION['user_id']) {
                         WHERE posts.post_by = $current_id
                         ORDER BY posts.post_time DESC";
             $profilesql = "SELECT users.user_id, users.user_gender, users.user_hometown, users.user_status, users.user_birthdate,
-                                 users.user_firstname, users.user_lastname, users.user_picture
+                                 users.user_firstname, users.user_lastname, users.user_nickname, users.user_picture
                           FROM users
                           WHERE users.user_id = $current_id";
             $profilequery = mysqli_query($conn, $profilesql);
         } else { // Another Profile ---> Retrieve User data and friendship status
             $profilesql = "SELECT users.user_id, users.user_gender, users.user_hometown, users.user_status, users.user_birthdate,
-                                    users.user_firstname, users.user_lastname, userfriends.friendship_status
+                                    users.user_firstname, users.user_lastname, users.user_nickname, userfriends.friendship_status
                             FROM users
                             LEFT JOIN (
                                 SELECT friendship.user1_id AS user_id, friendship.friendship_status
@@ -100,7 +100,7 @@ if(isset($_GET['id']) && $_GET['id'] != $_SESSION['user_id']) {
             mysqli_data_seek($profilequery,0);
             if(isset($row['friendship_status'])){ // Either a friend or requested as a friend
                 if($row['friendship_status'] == 1){ // Friend
-                    $postsql = "SELECT posts.post_caption, posts.post_time, users.user_firstname, users.user_lastname,
+                    $postsql = "SELECT posts.post_caption, posts.post_time, users.user_firstname, users.user_lastname, users.user_nickname,
                                         posts.post_public, users.user_id, users.user_gender, users.user_nickname,
                                         users.user_birthdate, users.user_hometown, users.user_status, users.user_about, 
                                         posts.post_id
